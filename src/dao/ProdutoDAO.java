@@ -66,4 +66,38 @@ public class ProdutoDAO {
 		}
 		return produtos;
 	}
+	
+	public void atualizarProduto(Produto produto) throws SQLException {
+		String sql = "UPDATE produtos SET nome_produto = ?, descricao = ?, quantidade_em_estoque = ?, preco_compra = ?, preco_venda = ?, id_categoria = ? WHERE id_produto = ?";
+		try(Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, produto.getNome());
+			stmt.setString(2, produto.getDescricao());
+			stmt.setInt(3, produto.getQuantidadeEmEstoque());
+			stmt.setDouble(4, produto.getPrecoCompra());
+			stmt.setDouble(5, produto.getPrecoVenda());
+			stmt.setInt(6, produto.getCategoria().getId());
+			stmt.setInt(7, produto.getId());
+			int rowsAffected = stmt.executeUpdate();
+			if (rowsAffected > 0) {
+				System.out.println("Entrada de produto realizada com sucesso!");
+			} else {
+				System.out.println("Produto não encontrado");
+			}
+		}
+	}
+	
+	public void excluirProduto(int idProduto) throws SQLException {
+		String sql = "DELETE FROM produtos WHERE id_produto = ?";
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setInt(1, idProduto);
+			int rowsAffected = stmt.executeUpdate();
+			if (rowsAffected > 0) {
+				System.out.println("Produto excluido com sucesso");
+			} else {
+				System.out.println("Produto não encontrado");
+			}
+		}
+	}
 }
