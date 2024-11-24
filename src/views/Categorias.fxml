@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.CategoriasController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <children>
+        <Label text="Gerenciamento de Categorias" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Button text="Adicionar Categoria" onAction="#handleAdicionarCategoria"/>
+        <ListView fx:id="categoriaListView"/>
+        <Button text="Editar Categoria" onAction="#handleEditarCategoria"/>
+        <Button text="Excluir Categoria" onAction="#handleExcluirCategoria" style="-fx-background-color: #FF6347; -fx-text-fill: white;"/>
+        <Button text="Voltar" onAction="#handleVoltar" style="-fx-background-color: #87CEEB; -fx-text-fill: white;"/>
+    </children>
+</VBox>

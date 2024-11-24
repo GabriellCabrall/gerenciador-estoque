@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.MainMenuController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <children>
+        <Label text="Gerenciador de Produtos" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Button fx:id="categoriasButton" text="Categorias" onAction="#handleCategorias"/>
+        <Button fx:id="produtosButton" text="Produtos" onAction="#handleProdutos"/>
+        <Button fx:id="sairButton" text="Sair" onAction="#handleSair"/>
+    </children>
+</VBox>
