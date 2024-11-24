@@ -17,6 +17,27 @@ CREATE TABLE produtos (
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 
+ALTER TABLE produtos
+MODIFY quantidade_em_estoque INT NOT NULL DEFAULT 10;
+
+CREATE TABLE movimentacao_estoque (
+    id_movimentacao INT AUTO_INCREMENT PRIMARY KEY,
+    id_produto INT,
+    quantidade INT NOT NULL,
+    tipo VARCHAR(10) NOT NULL,
+    data_movimentacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+);
+
+CREATE TABLE alertas_estoque (
+    id_alerta INT AUTO_INCREMENT PRIMARY KEY,
+    id_produto INT,
+    nome_produto VARCHAR(100),
+    mensagem_alerta TEXT,
+    data_alerta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+);
+
 DELIMITER $$
 
 CREATE PROCEDURE sp_cadastrar_categoria (
@@ -59,10 +80,29 @@ END$$
 
 DELIMITER ;
 
-CALL sp_cadastrar_categoria('Eletrônicos', 'Produtos eletrônicos diversos');
-SELECT * from categorias;
-CALL sp_cadastrar_produto('Celular', 'Smartphone de última geração', 50, 1000.00, 1500.00, 1);
-SELECT * FROM produtos;
-CALL sp_consultar_produtos_por_nome('Celular');
+DELIMITER $$
 
+CREATE TRIGGER VerificarEstoqueBaixo
+AFTER UPDATE ON produtos
+FOR EACH ROW
+BEGIN
+    DECLARE quantidade_minima INT DEFAULT 10; -- Define a quantidade mínima para alerta
+    DECLARE nome_produto VARCHAR(100);
 
+    -- Consulta o nome do produto
+    SELECT nome_produto INTO nome_produto FROM produtos WHERE id_produto = NEW.id_produto;
+
+    IF NEW.quantidade_em_estoque < quantidade_minima THEN
+        IF nome_produto IS NULL THEN
+            SET nome_produto = 'Desconhecido';
+        END IF;
+        SET @msg = CONCAT('Alerta: Quantidade em estoque do produto ', nome_produto, ' está abaixo do mínimo especificado.');
+        INSERT INTO alertas_estoque (id_produto, nome_produto, mensagem_alerta) VALUES (NEW.id_produto, nome_produto, @msg);
+    END IF;
+END$$
+
+DELIMITER ;
+
+Select * from produtos;
+select * from categorias;
+select * from alertas_estoque;
